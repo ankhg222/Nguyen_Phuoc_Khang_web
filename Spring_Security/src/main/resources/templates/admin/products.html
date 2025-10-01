@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sản Phẩm - Demo 3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Demo 3 - Spring Security</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Trang Chủ</a>
+                <a class="nav-link" href="/customer">Khách Hàng</a>
+                <a class="nav-link" href="/admin">Quản Trị</a>
+                <a class="nav-link" href="/logout">Đăng Xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Quản Lý Sản Phẩm</h2>
+                    <a href="/admin/products/new" class="btn btn-primary">Thêm Sản Phẩm Mới</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Mô Tả</th>
+                                <th>Giá</th>
+                                <th>Tồn Kho</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}">1</td>
+                                <td th:text="${product.name}">Product Name</td>
+                                <td th:text="${#strings.abbreviate(product.description, 50)}">Description</td>
+                                <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">0</td>
+                                <td th:text="${product.stock}">0</td>
+                                <td>
+                                    <span th:if="${product.active}" class="badge bg-success">Hoạt động</span>
+                                    <span th:unless="${product.active}" class="badge bg-secondary">Ngừng hoạt động</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning me-1">Sửa</a>
+                                    <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div th:if="${products == null or products.empty}" class="alert alert-info">
+                    <p>Chưa có sản phẩm nào. <a href="/admin/products/new">Thêm sản phẩm đầu tiên</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

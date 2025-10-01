@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa Sản Phẩm - Demo 3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Demo 3 - Spring Security</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Trang Chủ</a>
+                <a class="nav-link" href="/admin/products">Sản Phẩm</a>
+                <a class="nav-link" href="/logout">Đăng Xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h2>Sửa Sản Phẩm</h2>
+                        <a href="/admin/products" class="btn btn-outline-dark btn-sm">Quay Lại</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}">Error message</div>
+                        <div th:if="${success}" class="alert alert-success" th:text="${success}">Success message</div>
+                        
+                        <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Tên sản phẩm:</label>
+                                <input type="text" class="form-control" id="name" name="name" th:value="${product.name}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Mô tả:</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" th:text="${product.description}"></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="price" class="form-label">Giá (VNĐ):</label>
+                                        <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" th:value="${product.price}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="stock" class="form-label">Số lượng tồn kho:</label>
+                                        <input type="number" class="form-control" id="stock" name="stock" min="0" th:value="${product.stock}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="imageUrl" class="form-label">URL hình ảnh (tùy chọn):</label>
+                                <input type="url" class="form-control" id="imageUrl" name="imageUrl" th:value="${product.imageUrl}" placeholder="https://example.com/image.jpg">
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning">Cập Nhật Sản Phẩm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

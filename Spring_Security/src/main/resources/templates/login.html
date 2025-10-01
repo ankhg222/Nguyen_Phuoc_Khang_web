@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - Spring Security Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .demo-accounts {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+        .demo-accounts h6 {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .demo-account {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h2><i class="fas fa-shield-alt text-primary"></i> Đăng Nhập</h2>
+            <p>Spring Security Demo Application</p>
+        </div>
+        
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> Email hoặc mật khẩu không đúng!
+        </div>
+        
+        <div th:if="${param.logout}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i> Bạn đã đăng xuất thành công!
+        </div>
+        
+        <form th:action="@{/login}" method="post">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="username" name="username" placeholder="Email" required>
+                <label for="username"><i class="fas fa-envelope"></i> Email</label>
+            </div>
+            
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
+                <label for="password"><i class="fas fa-lock"></i> Mật khẩu</label>
+            </div>
+            
+            <button type="submit" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+            </button>
+        </form>
+        
+        <div class="demo-accounts">
+            <h6><i class="fas fa-info-circle"></i> Tài khoản demo:</h6>
+            <div class="demo-account"><strong>Admin:</strong> admin@demo.com / admin123</div>
+            <div class="demo-account"><strong>User:</strong> user@demo.com / user123</div>
+            <div class="demo-account"><strong>Demo:</strong> demo@demo.com / demo123</div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
