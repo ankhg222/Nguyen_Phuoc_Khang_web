@@ -16,10 +16,6 @@ USE spring_security_final;
 GO
 
 -- Xóa các bảng cũ nếu tồn tại (để tránh conflict)
-IF EXISTS (SELECT * FROM sysobjects WHERE name='users_roles' AND xtype='U')
-    DROP TABLE users_roles;
-GO
-
 IF EXISTS (SELECT * FROM sysobjects WHERE name='products' AND xtype='U')
     DROP TABLE products;
 GO
@@ -30,10 +26,6 @@ GO
 
 IF EXISTS (SELECT * FROM sysobjects WHERE name='user_info' AND xtype='U')
     DROP TABLE user_info;
-GO
-
-IF EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
-    DROP TABLE users;
 GO
 
 -- Tạo bảng products (theo entity Product.java)
@@ -64,26 +56,6 @@ CREATE TABLE user_info (
 );
 GO
 
--- Tạo bảng users (theo entity Users.java)
-CREATE TABLE users (
-    enabled BIT NOT NULL,
-    user_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-    email NVARCHAR(50) NOT NULL,
-    name VARCHAR(255),
-    password VARCHAR(255),
-    username VARCHAR(255)
-);
-GO
-
--- Tạo bảng users_roles (many-to-many relationship)
-CREATE TABLE users_roles (
-    role_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    PRIMARY KEY (role_id, user_id),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-GO
 
 -- Insert dữ liệu mẫu cho roles
 INSERT INTO roles (role_name) VALUES 
@@ -93,12 +65,12 @@ INSERT INTO roles (role_name) VALUES
 ('ROLE_CREATOR');
 GO
 
--- Insert dữ liệu mẫu cho user_info (password sẽ được mã hóa bởi Spring Boot)
--- Lưu ý: Spring Boot sẽ tự động mã hóa password bằng BCrypt
+-- Insert dữ liệu mẫu cho user_info (password đã được mã hóa bằng BCrypt)
+-- Mật khẩu gốc: admin123, user123, demo123
 INSERT INTO user_info (name, username, email, password, roles) VALUES 
-('admin', 'admin', 'admin@demo.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ROLE_ADMIN'),
-('user', 'user', 'user@demo.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ROLE_USER'),
-('demo', 'demo', 'demo@demo.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ROLE_USER');
+('admin', 'admin', 'admin@demo.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ROLE_ADMIN'),
+('user', 'user', 'user@demo.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ROLE_USER'),
+('demo', 'demo', 'demo@demo.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ROLE_USER');
 GO
 
 -- Insert dữ liệu mẫu cho products
