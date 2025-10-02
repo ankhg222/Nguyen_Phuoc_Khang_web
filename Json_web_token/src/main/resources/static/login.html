@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Spring Boot JWT Demo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-accounts {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-accounts h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .demo-accounts h3 i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .account-item:last-child {
+            border-bottom: none;
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-info .username {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .account-info .role {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .account-btn {
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .account-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .links {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .links a:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+    <script defer src="/mainjs.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const loginForm = document.getElementById("loginForm");
+            const message = document.getElementById("message");
+            const loginBtn = document.getElementById("loginBtn");
+            const spinner = document.getElementById("spinner");
+
+            // Demo account buttons
+            document.querySelectorAll('.account-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const username = btn.getAttribute('data-username');
+                    const password = btn.getAttribute('data-password');
+                    document.getElementById("usernameOrEmail").value = username;
+                    document.getElementById("password").value = password;
+                });
+            });
+
+            loginForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                // Clear previous messages
+                message.textContent = "";
+                message.className = "";
+                
+                // Show loading state
+                loginBtn.disabled = true;
+                spinner.style.display = "inline-block";
+                
+                const usernameOrEmail = document.getElementById("usernameOrEmail").value.trim();
+                const password = document.getElementById("password").value.trim();
+                
+                if (!usernameOrEmail || !password) {
+                    showMessage("Please fill in all fields", "error");
+                    resetButton();
+                    return;
+                }
+                
+                try {
+                    const data = await window.API.login({ usernameOrEmail, password });
+                    
+                    // Store tokens and user info
+                    localStorage.setItem("accessToken", data.accessToken);
+                    localStorage.setItem("refreshToken", data.refreshToken);
+                    localStorage.setItem("username", data.username);
+                    localStorage.setItem("userRole", data.role);
+                    
+                    showMessage("Login successful! Redirecting...", "success");
+                    
+                    setTimeout(() => {
+                        window.location.href = "/dashboard.html";
+                    }, 1000);
+                    
+                } catch (err) {
+                    showMessage(err.message || "Login failed. Please check your credentials.", "error");
+                } finally {
+                    resetButton();
+                }
+            });
+
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = `message ${type}`;
+            }
+
+            function resetButton() {
+                loginBtn.disabled = false;
+                spinner.style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <h1>JWT Auth Demo</h1>
+            <p>Spring Boot 3 + Security 6</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <input 
+                    id="usernameOrEmail" 
+                    type="text" 
+                    placeholder="Username or Email" 
+                    required 
+                    autocomplete="username"
+                />
+            </div>
+            
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <input 
+                    id="password" 
+                    type="password" 
+                    placeholder="Password" 
+                    required 
+                    autocomplete="current-password"
+                />
+            </div>
+            
+            <button type="submit" id="loginBtn" class="login-btn">
+                <span class="spinner" id="spinner"></span>
+                <span class="btn-text">Sign In</span>
+            </button>
+        </form>
+
+        <div id="message"></div>
+
+        <div class="demo-accounts">
+            <h3><i class="fas fa-users"></i> Demo Accounts</h3>
+            
+            <div class="account-item">
+                <div class="account-info">
+                    <div class="username">admin</div>
+                    <div class="role">Administrator</div>
+                </div>
+                <button class="account-btn" data-username="admin" data-password="admin123">
+                    Use
+                </button>
+            </div>
+            
+            <div class="account-item">
+                <div class="account-info">
+                    <div class="username">test</div>
+                    <div class="role">User</div>
+                </div>
+                <button class="account-btn" data-username="test" data-password="test123">
+                    Use
+                </button>
+            </div>
+            
+            <div class="account-item">
+                <div class="account-info">
+                    <div class="username">newuser123</div>
+                    <div class="role">User</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="/api/test/public" target="_blank">
+                <i class="fas fa-globe"></i> Public API
+            </a>
+            <a href="/swagger-ui/index.html" target="_blank">
+                <i class="fas fa-book"></i> API Docs
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 Spring Boot JWT Demo - Secure Authentication System</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+### Spring Boot JWT Application Test Collection
+### Import this file into Postman or use with REST clients
+
+### Variables
+@baseUrl = http://localhost:8080
+@apiBase = {{baseUrl}}/api
+@authBase = {{apiBase}}/auth
+@testBase = {{apiBase}}/test
+
+### 1. Health Check
+GET {{authBase}}/public/health
+
+### 2. Public Endpoint Test
+GET {{testBase}}/public
+
+### 3. Register New User
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+    "username": "testuser2024",
+    "email": "testuser2024@example.com",
+    "password": "password123"
+}
+
+### 4. Login with Admin
+POST {{authBase}}/login
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "admin",
+    "password": "admin123"
+}
+
+### 5. Login with Test User
+POST {{authBase}}/login
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "test",
+    "password": "test123"
+}
+
+### 6. Login with New User
+POST {{authBase}}/login
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "newuser123",
+    "password": "password123"
+}
+
+### 7. Access Protected Endpoint (Replace YOUR_JWT_TOKEN with actual token)
+GET {{testBase}}/protected
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 8. Access Admin Endpoint (Replace YOUR_JWT_TOKEN with actual token)
+GET {{testBase}}/admin
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 9. Test Unauthorized Access (Should return 403)
+GET {{testBase}}/protected
+
+### 10. Test Wrong Password (Should return 401)
+POST {{authBase}}/login
+Content-Type: application/json
+
+{
+    "usernameOrEmail": "admin",
+    "password": "wrongpassword"
+}
+
+### 11. Test Duplicate Registration (Should return 400)
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "password123"
+}
+
+### 12. Test Invalid Email Format (Should return 400)
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+    "username": "invaliduser",
+    "email": "invalid-email",
+    "password": "password123"
+}
+
+### 13. Test Empty Fields (Should return 400)
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+    "username": "",
+    "email": "",
+    "password": ""
+}
+
+### 14. Test Short Password (Should return 400)
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+    "username": "shortpass",
+    "email": "shortpass@example.com",
+    "password": "123"
+}
+
+### 15. Test Refresh Token (Replace YOUR_REFRESH_TOKEN with actual token)
+POST {{authBase}}/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "YOUR_REFRESH_TOKEN"
+}
+
+### 16. Test Logout (Replace YOUR_JWT_TOKEN with actual token)
+POST {{authBase}}/logout
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 17. Test User Profile (Replace YOUR_JWT_TOKEN with actual token)
+GET {{authBase}}/profile
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### 18. Test Update Profile (Replace YOUR_JWT_TOKEN with actual token)
+PUT {{authBase}}/profile
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+    "email": "newemail@example.com"
+}
+
+### 19. Test Change Password (Replace YOUR_JWT_TOKEN with actual token)
+PUT {{authBase}}/change-password
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+    "currentPassword": "admin123",
+    "newPassword": "newpassword123"
+}
+
+### 20. Test Delete Account (Replace YOUR_JWT_TOKEN with actual token)
+DELETE {{authBase}}/account
+Authorization: Bearer YOUR_JWT_TOKEN
+
+### Sample Users for Testing:
+### admin / admin123 (ADMIN role)
+### test / test123 (USER role)
+### newuser123 / password123 (USER role)
+### testuser4 / password123 (USER role)
+### testuser5 / password123 (USER role)
+### testuser6 / password123 (USER role)
+### testuser999 / password123 (USER role)
+### testuser2025 / password123 (USER role)
+
+### Expected Response Codes:
+### 200 - Success
+### 400 - Bad Request (validation errors)
+### 401 - Unauthorized (invalid credentials)
+### 403 - Forbidden (insufficient permissions)
+### 404 - Not Found (endpoint doesn't exist)
+### 500 - Internal Server Error

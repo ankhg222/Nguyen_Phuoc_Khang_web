@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot JWT Demo - Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .hero-icon {
+            font-size: 80px;
+            color: #667eea;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 18px 36px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .tech-stack {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .tech-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tech-items {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tech-item i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-content {
+                padding: 40px 30px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .tech-items {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 30px 20px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+    <script defer src="/mainjs.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            // Check if user is already logged in
+            if (window.API.isAuthenticated()) {
+                // Redirect to dashboard if already authenticated
+                window.location.href = "/dashboard.html";
+                return;
+            }
+
+            // Add click handlers for demo buttons
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const username = btn.getAttribute('data-username');
+                    const password = btn.getAttribute('data-password');
+                    
+                    // Store credentials and redirect to login
+                    localStorage.setItem('demoUsername', username);
+                    localStorage.setItem('demoPassword', password);
+                    window.location.href = "/login.html";
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            
+            <h1 class="hero-title">Spring Boot JWT Demo</h1>
+            <p class="hero-subtitle">
+                A comprehensive demonstration of JWT authentication with Spring Boot 3, 
+                Spring Security 6, and modern web technologies. Experience secure authentication 
+                with beautiful, responsive user interfaces.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="feature-title">Secure Authentication</div>
+                    <div class="feature-description">
+                        JWT-based authentication with refresh tokens and role-based access control
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="feature-title">Responsive Design</div>
+                    <div class="feature-description">
+                        Modern, mobile-first design that works perfectly on all devices
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="feature-title">RESTful APIs</div>
+                    <div class="feature-description">
+                        Clean REST APIs with comprehensive error handling and validation
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="feature-title">Database Integration</div>
+                    <div class="feature-description">
+                        SQL Server integration with JPA/Hibernate for robust data persistence
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="/login.html" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Get Started
+                </a>
+                <a href="/api/test/public" target="_blank" class="btn btn-secondary">
+                    <i class="fas fa-globe"></i>
+                    Try Public API
+                </a>
+                <a href="/swagger-ui/index.html" target="_blank" class="btn btn-secondary">
+                    <i class="fas fa-book"></i>
+                    API Documentation
+                </a>
+            </div>
+
+            <div class="tech-stack">
+                <div class="tech-title">Built With</div>
+                <div class="tech-items">
+                    <div class="tech-item">
+                        <i class="fab fa-java"></i>
+                        <span>Java 21</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-leaf"></i>
+                        <span>Spring Boot 3</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Spring Security 6</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-key"></i>
+                        <span>JWT</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-database"></i>
+                        <span>SQL Server</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-html5"></i>
+                        <span>HTML5/CSS3</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-js"></i>
+                        <span>JavaScript ES6+</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>© 2025 Spring Boot JWT Demo - Secure Authentication System</p>
+                <p>Demonstrating modern web security best practices</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

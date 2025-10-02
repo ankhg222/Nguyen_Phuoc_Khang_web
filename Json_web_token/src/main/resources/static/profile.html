@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Spring Boot JWT Demo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-right: 25px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-info h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .profile-info .role {
+            background: #667eea;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .profile-info .email {
+            color: #666;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .card-icon.api { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .card-icon.token { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .api-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .api-btn {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .api-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .api-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .api-response {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .api-response.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .api-response.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .token-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .token-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .token-item:last-child {
+            border-bottom: none;
+        }
+
+        .token-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .token-value {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .user-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .api-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+    <script defer src="/mainjs.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", async () => {
+            // Check authentication
+            const accessToken = localStorage.getItem("accessToken");
+            if (!accessToken) {
+                window.location.href = "/login.html";
+                return;
+            }
+
+            const username = localStorage.getItem("username") || "Unknown";
+            const userRole = localStorage.getItem("userRole") || "USER";
+            const refreshToken = localStorage.getItem("refreshToken") || "";
+            
+            // Update profile info
+            document.getElementById("username").textContent = username;
+            document.getElementById("userRole").textContent = userRole;
+            document.getElementById("userAvatar").textContent = username.charAt(0).toUpperCase();
+            document.getElementById("userEmail").textContent = username + "@example.com";
+
+            // Update token info
+            document.getElementById("accessToken").textContent = accessToken.substring(0, 50) + "...";
+            document.getElementById("refreshToken").textContent = refreshToken.substring(0, 50) + "...";
+
+            // API call functions
+            window.callUserAPI = async () => {
+                const responseDiv = document.getElementById("apiResponse");
+                const loadingDiv = document.getElementById("apiLoading");
+                
+                showLoading(loadingDiv);
+                try {
+                    const response = await window.API.get("/api/test/user");
+                    showResponse(responseDiv, response, "success");
+                } catch (error) {
+                    showResponse(responseDiv, error.message, "error");
+                } finally {
+                    hideLoading(loadingDiv);
+                }
+            };
+
+            window.callAdminAPI = async () => {
+                const responseDiv = document.getElementById("apiResponse");
+                const loadingDiv = document.getElementById("apiLoading");
+                
+                showLoading(loadingDiv);
+                try {
+                    const response = await window.API.get("/api/test/admin");
+                    showResponse(responseDiv, response, "success");
+                } catch (error) {
+                    showResponse(responseDiv, error.message, "error");
+                } finally {
+                    hideLoading(loadingDiv);
+                }
+            };
+
+            window.callPublicAPI = async () => {
+                const responseDiv = document.getElementById("apiResponse");
+                const loadingDiv = document.getElementById("apiLoading");
+                
+                showLoading(loadingDiv);
+                try {
+                    const response = await window.API.get("/api/test/public", false);
+                    showResponse(responseDiv, response, "success");
+                } catch (error) {
+                    showResponse(responseDiv, error.message, "error");
+                } finally {
+                    hideLoading(loadingDiv);
+                }
+            };
+
+            window.refreshToken = async () => {
+                const responseDiv = document.getElementById("tokenResponse");
+                const loadingDiv = document.getElementById("tokenLoading");
+                
+                showLoading(loadingDiv);
+                try {
+                    const refreshToken = localStorage.getItem("refreshToken");
+                    const response = await window.API.refresh(refreshToken);
+                    
+                    localStorage.setItem("accessToken", response.accessToken);
+                    localStorage.setItem("refreshToken", response.refreshToken);
+                    
+                    // Update token display
+                    document.getElementById("accessToken").textContent = response.accessToken.substring(0, 50) + "...";
+                    document.getElementById("refreshToken").textContent = response.refreshToken.substring(0, 50) + "...";
+                    
+                    showResponse(responseDiv, "Token refreshed successfully!", "success");
+                } catch (error) {
+                    showResponse(responseDiv, error.message, "error");
+                } finally {
+                    hideLoading(loadingDiv);
+                }
+            };
+
+            window.logout = () => {
+                if (confirm("Are you sure you want to logout?")) {
+                    localStorage.clear();
+                    window.location.href = "/login.html";
+                }
+            };
+
+            function showLoading(loadingDiv) {
+                loadingDiv.style.display = "block";
+            }
+
+            function hideLoading(loadingDiv) {
+                loadingDiv.style.display = "none";
+            }
+
+            function showResponse(responseDiv, content, type) {
+                responseDiv.textContent = content;
+                responseDiv.className = `api-response ${type}`;
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-profile">
+                <div class="profile-avatar" id="userAvatar">U</div>
+                <div class="profile-info">
+                    <h2 id="username">User</h2>
+                    <span class="role" id="userRole">USER</span>
+                    <div class="email" id="userEmail">user@example.com</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="/dashboard.html" class="btn btn-secondary">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <button onclick="logout()" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- API Testing Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon api">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="card-title">API Testing</div>
+                </div>
+                
+                <div class="api-buttons">
+                    <button onclick="callUserAPI()" class="api-btn">
+                        <i class="fas fa-user"></i> User API
+                    </button>
+                    <button onclick="callAdminAPI()" class="api-btn">
+                        <i class="fas fa-crown"></i> Admin API
+                    </button>
+                    <button onclick="callPublicAPI()" class="api-btn">
+                        <i class="fas fa-globe"></i> Public API
+                    </button>
+                    <button onclick="refreshToken()" class="api-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Token
+                    </button>
+                </div>
+
+                <div class="loading" id="apiLoading">
+                    <div class="spinner"></div>
+                    <div>Loading...</div>
+                </div>
+                
+                <div class="api-response" id="apiResponse">Click a button to test the APIs</div>
+            </div>
+
+            <!-- Token Information Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon token">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="card-title">Token Information</div>
+                </div>
+                
+                <div class="token-info">
+                    <div class="token-item">
+                        <span class="token-label">Access Token:</span>
+                        <span class="token-value" id="accessToken">Loading...</span>
+                    </div>
+                    <div class="token-item">
+                        <span class="token-label">Refresh Token:</span>
+                        <span class="token-value" id="refreshToken">Loading...</span>
+                    </div>
+                    <div class="token-item">
+                        <span class="token-label">Token Type:</span>
+                        <span class="token-value">JWT</span>
+                    </div>
+                    <div class="token-item">
+                        <span class="token-label">Expires In:</span>
+                        <span class="token-value">24 hours</span>
+                    </div>
+                </div>
+
+                <div class="loading" id="tokenLoading">
+                    <div class="spinner"></div>
+                    <div>Refreshing...</div>
+                </div>
+                
+                <div class="api-response" id="tokenResponse">Token information displayed above</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2025 Spring Boot JWT Demo - User Profile Management</p>
+        </div>
+    </div>
+</body>
+</html>
